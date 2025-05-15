@@ -1,4 +1,5 @@
 ``` docker-compose -f docker-compose.yaml up ```
+
 Docker compose will:
 1. Launch a teamcity-server container first (depends_on).
 2. Build a teamcity-agent image according to Dockerfile and launch it.
