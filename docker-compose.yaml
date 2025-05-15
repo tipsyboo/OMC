@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  teamcity-server:
+    image: jetbrains/teamcity-server
+    container_name: teamcity-server
+    ports: 
+      - 8111:8111
+    volumes:
+      - teamcity_server_data:/data/teamcity_server/datadir
+      - teamcity_server_logs:/opt/teamcity/logs
+    networks:
+      - default
+      - private_lan
+    restart: unless-stopped
+
+  teamcity-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: teamcity-agent
+    volumes:
+      - teamcity_agent_data:/data/teamcity_agent
+    environment:
+      - SERVER_URL=http://teamcity-server:8111
+    networks:
+      - private_lan
+    depends_on:
+      - teamcity-server
+    restart: unless-stopped
+
+volumes:
+  teamcity_server_data:
+  teamcity_server_logs:
+  teamcity_agent_data:
+
+networks:
+  private_lan:
+    driver: bridge
+    internal: true
